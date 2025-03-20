@@ -155,38 +155,38 @@ export const updateProfile = mutation({
 
 // Get current user
 export const getCurrentUser = query({
-    args: {},
-    handler: async (ctx) => {
-      const identity = await ctx.auth.getUserIdentity();
-      if (!identity) {
-        return null;
-      }
-      
-      const users = await ctx.db.query("users")
-        .filter(q => q.eq(q.field("clerkId"), identity.subject))
-        .collect();
-      
-      return users[0] || null;
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return null;
     }
-  });
-  
-  // Check if current user is admin
-  export const isCurrentUserAdmin = query({
-    args: {},
-    handler: async (ctx) => {
-      const identity = await ctx.auth.getUserIdentity();
-      if (!identity) {
-        return false;
-      }
-      
-      const users = await ctx.db.query("users")
-        .filter(q => q.eq(q.field("clerkId"), identity.subject))
-        .collect();
-      
-      if (users.length === 0) {
-        return false;
-      }
-      
-      return users[0].isAdmin === true;
+    
+    const users = await ctx.db.query("users")
+      .filter(q => q.eq(q.field("clerkId"), identity.subject))
+      .collect();
+    
+    return users[0] || null;
+  }
+});
+
+// Check if current user is admin
+export const isCurrentUserAdmin = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return false;
     }
-  });
+    
+    const users = await ctx.db.query("users")
+      .filter(q => q.eq(q.field("clerkId"), identity.subject))
+      .collect();
+    
+    if (users.length === 0) {
+      return false;
+    }
+    
+    return users[0].isAdmin === true;
+  }
+});

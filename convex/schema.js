@@ -2,14 +2,24 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
-  // Bikes table to store all bike information
+  // Users table
+  users: defineTable({
+    clerkId: v.string(),
+    name: v.string(),
+    email: v.string(),
+    isAdmin: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_clerkId", ["clerkId"]),
+
+  // Bikes table
   bikes: defineTable({
     name: v.string(),
     description: v.string(),
-    type: v.string(), // mountain, road, city, etc.
+    type: v.string(),
     pricePerHour: v.number(),
     pricePerDay: v.number(),
-    images: v.array(v.string()), // URLs to images
+    images: v.array(v.string()),
     specifications: v.object({
       brand: v.string(),
       model: v.string(),
@@ -20,42 +30,30 @@ export default defineSchema({
       gears: v.optional(v.number()),
     }),
     isAvailable: v.boolean(),
-    createdAt: v.number(), // timestamp
-    updatedAt: v.number(), // timestamp
+    createdAt: v.number(),
+    updatedAt: v.number(),
   }),
 
-  // Bookings table for all reservations
+  // Bookings table
   bookings: defineTable({
     bikeId: v.id("bikes"),
-    userId: v.string(), // Clerk user ID
-    startTime: v.number(), // timestamp
-    endTime: v.number(), // timestamp
+    userId: v.string(),
+    startTime: v.number(),
+    endTime: v.number(),
     totalPrice: v.number(),
-    status: v.string(), // pending, confirmed, completed, cancelled
+    status: v.string(),
     notes: v.optional(v.string()),
-    createdAt: v.number(), // timestamp
-    updatedAt: v.number(), // timestamp
-  }),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_userId", ["userId"]),
 
-  // User profile table (extending Clerk profiles)
-  users: defineTable({
-    clerkId: v.string(), // Clerk user ID
-    name: v.string(),
-    email: v.string(),
-    phone: v.optional(v.string()),
-    address: v.optional(v.string()),
-    isAdmin: v.boolean(),
-    createdAt: v.number(), // timestamp
-    updatedAt: v.number(), // timestamp
-  }),
-
-  // Table for storing analytics data
+  // Analytics table
   analytics: defineTable({
-    date: v.string(), // YYYY-MM-DD
+    date: v.string(),
     totalBookings: v.number(),
     revenue: v.number(),
     activeUsers: v.number(),
     popularBikes: v.array(v.id("bikes")),
-    createdAt: v.number(), // timestamp
+    createdAt: v.number(),
   }),
 });
