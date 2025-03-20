@@ -1,30 +1,19 @@
 'use client';
 
-import { ClerkProvider } from "@clerk/nextjs";
-import { useConvexAuth } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useEffect } from "react";
 
-export function AuthProvider({ children }) {
-  return (
-    <ClerkProvider>
-      {children}
-    </ClerkProvider>
-  );
-}
-
 // This component handles syncing the Clerk user to our Convex database
 export function ClerkConvexAdapter({ children }) {
-  const { isAuthenticated, isLoading } = useConvexAuth();
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const createOrUpdateUser = useMutation(api.users.createOrUpdate);
   
   // When a user is authenticated, save their info to our Convex database
   useEffect(() => {
     const syncUser = async () => {
-      if (isAuthenticated && user && !isLoading) {
+      if (isSignedIn && user) {
         try {
           await createOrUpdateUser({
             clerkId: user.id,
@@ -41,7 +30,7 @@ export function ClerkConvexAdapter({ children }) {
     };
     
     syncUser();
-  }, [isAuthenticated, user, isLoading, createOrUpdateUser]);
+  }, [isSignedIn, user, createOrUpdateUser]);
   
   return children;
 }
