@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { UserButton, useUser } from '@clerk/nextjs';
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 import { redirect } from 'next/navigation';
 import { ADMIN_NAVIGATION } from '@/lib/constants';
 import { Loader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
-import { useUsers } from '@/hooks/use-users';
 
 // Icon imports
 import { 
@@ -38,15 +39,19 @@ const getIcon = (icon) => {
 
 export default function AdminLayout({ children }) {
   const { isLoaded, isSignedIn, user } = useUser();
-  const { isAdmin } = useUsers();
+  const isAdmin = useQuery(api.users.isCurrentUserAdmin);
+  const currentUser = useQuery(api.users.getCurrentUser);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const pathname = usePathname();
 
   // Show loading state while checking authentication
-  if (!isLoaded) {
+  if (!isLoaded || (isSignedIn && (isAdmin === undefined || currentUser === undefined))) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
-        <Loader size="lg" className="text-blue-600" />
+        <div className="text-center">
+          <Loader size="lg" className="text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">Checking admin permissions...</p>
+        </div>
       </div>
     );
   }

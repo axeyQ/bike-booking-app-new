@@ -8,12 +8,16 @@ export default clerkMiddleware({
   publicRoutes: [
     "/",
     "/api/webhook(.*)",
+    "/auth/verify-email",
+    "/auth/verify-email-confirm",
+    "/admin-setup"
   ],
   
   // Routes that can be accessed while signed in or not
   ignoredRoutes: [
     "/api/webhook(.*)",
   ],
+  debug: process.env.NODE_ENV === 'development',
 });
  
 export const config = {

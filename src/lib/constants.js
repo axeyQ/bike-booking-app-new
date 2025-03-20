@@ -130,9 +130,9 @@ export const BIKE_TYPES = [
   
   // Time periods for reports
   export const REPORT_PERIODS = [
-    { id: 'week', label: 'Last 7 days' },
-    { id: 'month', label: 'Last 30 days' },
-    { id: 'quarter', label: 'Last 90 days' },
-    { id: 'year', label: 'Last 365 days' },
+    { id: 'week', label: 'Last 7 Days' },
+    { id: 'month', label: 'Last 30 Days' },
+    { id: 'quarter', label: 'Last 90 Days' },
+    { id: 'year', label: 'Last 365 Days' },
     { id: 'custom', label: 'Custom Range' },
   ];
